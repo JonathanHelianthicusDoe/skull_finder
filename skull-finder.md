@@ -146,3 +146,153 @@ And we can actually do the same thing for the `1` on the left. The `1` on the ri
 One of the most important things about playing Skull Finder/minesweeper is that **you must keep track of all tiles that you know to be hot**, and find as many such tiles as you can. Generally this means holding the info in your head, but when playing Skull Finder, the way that you look around and see the board on the screen is quite disorienting, and in any case your memory may only take you so far. Because of this, keeping track of which tiles are proven to be hot is a matter of both keeping it in your head *as well as* re-deriving the proofs on the fly to re-prove them to yourself.
 
 Additionally, make sure that you **take it easy**. In some cases you might not care too much, and other toons are often rushing to get all the puzzles (and everything else in the DA Office) done as fast as possible. Nevertheless, Skull Finder is a game of concentration. It requires you to remember things and to solve lots of subproblems on the fly, and most importantly, **one mistake means instantly losing the entire game**. Even if you're an expert skull finder, it often pays to double- (and triple- or quadruple-) check your work before revealing tiles. Measure twice; cut once.
+
+**Don't go for diagonal tiles**. What I mean is this...
+
+```
+ _ _ _
+|_|_|_|
+|_|!|d|
+|r|r|!|
+```
+
+Here, the tiles marked with "`r`" are the only revealed tiles. That makes the "`d`" tile a "diagonal" tile, since it is adjacent to a revealed tile but you can't get there directly by walking over an edge that it shares with a revealed tile; you would have to either reveal some other tile(s) first (like the "`!`" ones), or go diagonally from one tile corner to another. If the "`d`" tile is one that you proved to be cold, it can be tempting to try to approach it diagonally, bypassing both "`!`" tiles. But unless you can prove that both "`!`" tiles are cold, do not do that! Unless you really are some kind of ninja-like super-toon with the dexterity of a caffeinated mountain goat, you **will** mess it up. And when you do, chances are there will be a skull-and-crossbones and some laser cogs waiting to greet you.
+
+## Specific strategies/case analysis
+
+### Direct use of 1-tiles
+
+Because `1` is the smallest number that a tile can reveal while still giving useful information, it gives the most pointed and specific information about the board around it. In any case, boards tend to be "sparse" in some sense, so they generally have a lot of `1`s. As such, the most abundant low-hanging fruits tend to be tiles that are shown to be hot by a single `1`-tile, and tiles that are shown to be cold by a single `1`-tile in combination with 1 known-hot tile. Let's break down an example that has both of these cases. The boards drawn to illustrate this example are snipped from a larger board, so the edges of the square aren't meaningful:
+
+```
+ _ _ _ _
+|_|_|_|_|
+|r|1|_|r|
+|r|1|r|r|
+|r|r|r|r|
+```
+
+If you look at the lower `1`-tile, you'll notice that it only witnesses one concealed tile; therefore that tile must be hot. That is what I mean by "tiles that are shown to be hot by a single `1`-tile". So we rewrite:
+
+```
+ _ _ _ _
+|_|_|_|_|
+|r|1|*|r|
+|r|1|r|r|
+|r|r|r|r|
+```
+
+Now that we have a tile that we proved to be hot, the upper `1`-tile comes in handy. Since it witnesses that hot tile, all other tiles that it witnesses must be cold. That is what I mean by "tiles that are shown to be cold by a single `1`-tile in combination with 1 known-hot tile". So we can reveal some more tiles now:
+
+```
+ _ _ _ _
+|r|r|r|_|
+|r|1|*|r|
+|r|1|r|r|
+|r|r|r|r|
+```
+
+### Two 1-tiles in a row, one being an edge tile
+
+Here's a simple case of using an indirect proof. By "indirect" I mean using partial information, like "I know that exactly one of these tiles is hot", instead of absolute information like "I know that this tile and this tile are hot". Here we treat only the left side of the example board as not being snipped:
+
+```
+    ?????
+   _ _ _ _
+W |_|_|_|_| ?
+A |_|_|_|_| ?
+L |1|1|_|_| ?
+L |r|r|_|_| ?
+    ?????
+```
+
+If we look at the leftmost `1`-tile, it only witnesses 5 other tiles due to its status as an edge tile. And only 2 of those 5 are concealed. Therefore, exactly 1 of those 2 tiles is hot, and the other is then cold. We don't know which one is the hot and which one is the cold, but that's OK. Looking at the rightmost `1`-tile, we see that it witnesses both of the tiles that we know encompass exactly 1 hot tile. Therefore the 1 hot tile that this rightmost `1`-tile witnesses must be one of those two, and *cannot be any of the other ones*. So we have then proved that the 3 other concealed tiles that it witnesses are cold and can reveal them:
+
+```
+    ?????
+   _ _ _ _
+W |_|_|_|_| ?
+A |_|_|r|_| ?
+L |1|1|r|_| ?
+L |r|r|r|_| ?
+    ?????
+```
+
+## Example game walkthrough
+
+```
+ _ _ _ _ _ _ _
+|*|_|_|_|_|_|_|
+|_|_|_|*|_|_|_|
+|_|*|_|_|*|_|_|
+|_|_|_|_|_|_|*|
+|_|_|_|*|*|_|_|
+|_|*|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|2|1|
+|_|_|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|2|1|
+|1|*|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|1|1|_|_|_|2|1|
+|1|*|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|1|1|2|_|_|_|_|
+|1|1|2|_|_|2|1|
+|1|*|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|2|_|_|_|_|
+|1|1|2|_|_|_|_|
+|1|1|2|_|_|2|1|
+|1|*|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|2|_|_|_|_|
+|1|1|2|_|t|_|_|
+|1|1|2|*|*|2|1|
+|1|*|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+ _ _ _ _ _ _ _
+|_|_|_|_|_|_|_|
+|_|_|_|_|_|_|_|
+|_|_|2|_|_|_|_|
+|1|1|2|3|3|_|_|
+|1|1|2|*|*|2|1|
+|1|*|2|2|2|1|0|
+|1|1|1|0|0|0|0|
+
+```
+
+║
